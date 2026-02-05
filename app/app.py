@@ -1,17 +1,18 @@
+Dockerfile
 import os
 from flask import Flask, jsonify, request
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
-from config import config
-from models import db
-from routes.auth import auth_bp, create_default_admin
-from routes.customers import customers_bp
-from routes.records import records_bp
-from routes.symptoms import symptoms_bp
-from routes.analysis import analysis_bp
-from routes.compare import compare_bp
-from routes.reports import reports_bp
-from routes.admin import admin_bp
+from app.config import config
+from app.models import db
+from app.routes.auth import auth_bp, create_default_admin
+from app.routes.customers import customers_bp
+from app.routes.records import records_bp
+from app.routes.symptoms import symptoms_bp
+from app.routes.analysis import analysis_bp
+from app.routes.compare import compare_bp
+from app.routes.reports import reports_bp
+from app.routes.admin import admin_bp
 
 def create_app(config_name='default'):
     """创建Flask应用工厂函数"""
