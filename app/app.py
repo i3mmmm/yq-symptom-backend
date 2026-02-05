@@ -1,4 +1,6 @@
 import os
+import sys
+from datetime import datetime
 from flask import Flask, jsonify, request
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
@@ -100,20 +102,17 @@ def create_app(config_name='default'):
     return app
 
 if __name__ == '__main__':
-    import sys
-    from datetime import datetime
-    
     # 设置环境变量
     if len(sys.argv) > 1:
         config_name = sys.argv[1]
     else:
-        config_name = 'development'
+        config_name = os.environ.get('FLASK_ENV', 'development')
     
     app = create_app(config_name)
     
     # 运行应用
     host = os.environ.get('HOST', '0.0.0.0')
-    port = int(os.environ.get('PORT', 5000))
+    port = int(os.environ.get('PORT', 8080))
     
     print(f"启动医疗症状收集与分析系统后端...")
     print(f"环境: {config_name}")
