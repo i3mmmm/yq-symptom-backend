@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>健康咨询报告 - {{ customer_name }}</title>
+    <style>
+        /* 基础样式 */
+        body {
+            font-family: 'Microsoft YaHei', 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        
+        .report-container {
+            max-width: 210mm;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        
+        /* 页眉 */
+        .header {
+            border-bottom: 3px solid #2c80ff;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .logo-section {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .logo-placeholder {
+            width: 80px;
+            height: 80px;
+            background-color: #e8f0ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            border: 2px dashed #2c80ff;
+        }
+        
+        .logo-text {
+            color: #2c80ff;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .company-info {
+            flex-grow: 1;
+        }
+        
+        .company-name {
+            font-size: 28px;
+            color: #2c80ff;
+            margin: 0 0 5px 0;
+            font-weight: 700;
+        }
+        
+        .company-tagline {
+            color: #666;
+            font-size: 14px;
+            margin: 0;
+        }
+        
+        /* 报告标题 */
+        .report-title {
+            text-align: center;
+            color: #1a5dc1;
+            margin: 30px 0;
+            padding: 15px;
+            background: linear-gradient(135deg, #e8f0ff 0%, #d4e4ff 100%);
+            border-radius: 10px;
+            border-left: 5px solid #2c80ff;
+        }
+        
+        .report-title h1 {
+            margin: 0;
+            font-size: 32px;
+        }
+        
+        .report-title .subtitle {
+            margin-top: 10px;
+            color: #4a90e2;
+            font-size: 18px;
+        }
+        
+        /* 客户信息 */
+        .customer-info {
+            background-color: #f0f7ff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid #2c80ff;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .info-item {
+            margin-bottom: 10px;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            color: #1a5dc1;
+            margin-right: 10px;
+        }
+        
+        /* 症状汇总 */
+        .section {
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            color: #1a5dc1;
+            border-bottom: 2px solid #2c80ff;
+            padding-bottom: 8px;
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+        
+        .summary-box {
+            background-color: #f8fbff;
+            border: 1px solid #d4e4ff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #d4e4ff;
+        }
+        
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+        
+        /* 区域统计 */
+        .area-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .area-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 3px 10px rgba(44, 128, 255, 0.1);
+            border-top: 4px solid;
+        }
+        
+        .area-red { border-top-color: #ff4d4d; }
+        .area-green { border-top-color: #4cd964; }
+        .area-white { border-top-color: #e6e6e6; }
+        .area-black { border-top-color: #333333; }
+        .area-yellow { border-top-color: #ffcc00; }
+        .area-blue { border-top-color: #2c80ff; }
+        
+        .area-name {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+        
+        .area-count {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a5dc1;
+        }
+        
+        /* 原因分析 */
+        .tag-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .tag-item {
+            background: linear-gradient(135deg, #2c80ff, #4a90e2);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .tag-count {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-left: 8px;
+            font-size: 12px;
+        }
+        
+        /* 建议列表 */
+        .recommendation-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        
+        .recommendation-item {
+            background-color: #f0f7ff;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border-left: 4px solid;
+            page-break-inside: avoid;
+        }
+        
+        .rec-high { border-left-color: #ff4d4d; }
+        .rec-medium { border-left-color: #ffcc00; }
+        .rec-low { border-left-color: #4cd964; }
+        
+        .rec-category {
+            font-weight: 600;
+            color: #1a5dc1;
+            margin-bottom: 5px;
+        }
+        
+        .rec-priority {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: white;
+            margin-left: 10px;
+        }
+        
+        .priority-high { background-color: #ff4d4d; }
+        .priority-medium { background-color: #ffcc00; }
+        .priority-low { background-color: #4cd964; }
+        
+        /* 页脚 */
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #d4e4ff;
+            text-align: center;
+            color: #666;
+            font-size: 12px;
+        }
+        
+        .footer-note {
+            margin-top: 10px;
+            color: #999;
+            font-style: italic;
+        }
+        
+        /* 打印样式 */
+        @media print {
+            body {
+                background-color: white;
+                padding: 0;
+            }
+            
+            .report-container {
+                box-shadow: none;
+                padding: 0;
+            }
+            
+            .no-print {
+                display: none;
+            }
+            
+            .page-break {
+                page-break-before: always;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="report-container">
+        <!-- 页眉 -->
+        <div class="header">
+            <div class="logo-section">
+                <div class="logo-placeholder">
+                    <span class="logo-text">公司LOGO</span>
+                </div>
+                <div class="company-info">
+                    <h1 class="company-name">健康管理中心</h1>
+                    <p class="company-tagline">专业医疗健康咨询 • 个性化健康管理方案</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 报告标题 -->
+        <div class="report-title">
+            <h1>健康咨询分析报告</h1>
+            <div class="subtitle">编号：{{ report_id }} • 生成时间：{{ generated_at }}</div>
+        </div>
+        
+        <!-- 客户基本信息 -->
+        <div class="section">
+            <h2 class="section-title">客户基本信息</h2>
+            <div class="customer-info">
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">姓名：</span>
+                        <span>{{ customer_name }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">性别：</span>
+                        <span>{{ customer_gender }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">年龄：</span>
+                        <span>{{ customer_age }}岁</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">联系方式：</span>
+                        <span>{{ customer_contact }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">报告对应记录：</span>
+                        <span>第{{ record_count }}次提交</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">提交时间：</span>
+                        <span>{{ submission_time }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 症状汇总 -->
+        <div class="section">
+            <h2 class="section-title">症状汇总分析</h2>
+            
+            <div class="summary-box">
+                <div class="summary-item">
+                    <span>总症状数量</span>
+                    <strong>{{ total_symptoms }}个</strong>
+                </div>
+                <div class="summary-item">
+                    <span>整体风险等级</span>
+                    <strong class="risk-{{ overall_risk_level }}">{{ overall_risk_level }}</strong>
+                </div>
+                <div class="summary-item">
+                    <span>主要问题区域</span>
+                    <span>{{ primary_areas|join('、') }}</span>
+                </div>
+            </div>
+            
+            <h3>区域症状分布</h3>
+            <div class="area-stats">
+                {% for area in area_distribution %}
+                <div class="area-card area-{{ area.area }}">
+                    <div class="area-name">{{ area.area_name }}</div>
+                    <div class="area-count">{{ area.symptom_count }}个</div>
+                    <div class="area-percentage">{{ area.percentage }}%</div>
+                    <div class="area-risk">风险等级：{{ area.risk_level }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <!-- 原因分析 -->
+        <div class="section">
+            <h2 class="section-title">原因分析</h2>
+            
+            <p><strong>主要问题类型：</strong> {{ causes_summary }}</p>
+            
+            <h3>症状原因标签分布</h3>
+            <div class="tag-cloud">
+                {% for tag in tag_distribution %}
+                <div class="tag-item">
+                    {{ tag.tag }}
+                    <span class="tag-count">{{ tag.count }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <h3>各区域主要原因分析</h3>
+            <div class="summary-box">
+                {% for area in area_tag_analysis %}
+                <div style="margin-bottom: 15px;">
+                    <strong>{{ area.area_name }}</strong>（{{ area.total_symptoms }}个症状）
+                    <div style="margin-top: 5px;">
+                        {% for tag in area.top_tags %}
+                        <span style="background-color: #e8f0ff; padding: 3px 8px; border-radius: 4px; margin-right: 5px; font-size: 13px;">
+                            {{ tag.tag }} ({{ tag.count }}个)
+                        </span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <!-- 健康建议 -->
+        <div class="section">
+            <h2 class="section-title">个性化健康建议</h2>
+            
+            <div class="summary-box">
+                <p><strong>总体建议：</strong> {{ overall_advice }}</p>
+            </div>
+            
+            <h3>详细建议列表</h3>
+            <ul class="recommendation-list">
+                {% for rec in recommendations %}
+                <li class="recommendation-item rec-{{ rec.priority }}">
+                    <div class="rec-category">
+                        {{ rec.category }}
+                        <span class="rec-priority priority-{{ rec.priority }}">{{ rec.priority }}优先级</span>
+                    </div>
+                    <p><strong>建议：</strong> {{ rec.recommendation }}</p>
+                    <p><strong>具体行动项：</strong></p>
+                    <ul>
+                        {% for action in rec.action_items %}
+                        <li>{{ action }}</li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                {% endfor %}
+            </ul>
+            
+            <div class="summary-box">
+                <h4>行动方案</h4>
+                <p><strong>立即行动：</strong> {{ action_plan.immediate_actions|join('；') }}</p>
+                <p><strong>短期目标：</strong> {{ action_plan.short_term_goals|join('；') }}</p>
+                <p><strong>长期策略：</strong> {{ action_plan.long_term_strategies|join('；') }}</p>
+            </div>
+        </div>
+        
+        <!-- 免责声明和页脚 -->
+        <div class="footer">
+            <p><strong>免责声明：</strong>本报告基于客户提供的信息进行分析，仅供参考，不能替代专业医疗诊断。如有严重症状，请及时就医。</p>
+            <p>报告生成系统：医疗症状收集与分析系统 • 版本：1.0</p>
+            <div class="footer-note">
+                本报告生成时间：{{ generated_at }} • 报告有效期：30天
+            </div>
+        </div>
+    </div>
+</body>
+</html>
